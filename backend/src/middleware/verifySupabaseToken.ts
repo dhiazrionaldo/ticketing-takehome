@@ -23,6 +23,8 @@ function getAdminClient() {
 export async function verifySupabaseToken(req: Request, res: Response, next: NextFunction) {
   try {
     const auth = req.headers.authorization; //get Authorization header
+    
+    const admin = getAdminClient();
 
     // Check if the Authorization header is present and properly formatted
     if (!auth || !auth.startsWith('Bearer ')) {

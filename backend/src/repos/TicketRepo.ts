@@ -1,5 +1,6 @@
 import { BaseRepo } from './BaseRepo';
 import { Ticket } from '../models/Ticket';
+import { EventRepo } from './EventRepo';
 
 export class TicketRepo extends BaseRepo {
 
@@ -31,6 +32,11 @@ export class TicketRepo extends BaseRepo {
     async create(payload: Partial<Ticket>): Promise<Ticket> {
         //TODO: Create new ticket data on Supabase
         const { data, error } = await this.client.from('tickets').insert(payload).select().single();
+        
+        
+        //Throw error if event is not found
+        const event = await new EventRepo().getById(payload.event_id!);
+        if (!event) throw new Error('Event not found!');
         
         //Throw error if any issues
         if (error) throw new Error(error.message);

@@ -4,21 +4,28 @@ import { ProfileRepo } from '../repos/ProfileRepo';
 //TODO: Middleware to require admin role
 export async function requireAdmin(req: Request, res: Response, next: NextFunction) {
   try {
-    const user = (req as any).user; //get authenticated user from request
-    if (!user) return res.status(401).json({ message: 'Not authenticated' }); //if no user, return 401
+    const user = (req as any).user;
+    //if user not found in request, return error
+    if (!user) return res.status(401).json({ message: 'Unauthorized' });
+
+    const profileRepo = new ProfileRepo();
+    const profile = await profileRepo.findById(user.id);
+
+    //if no profile found, return error
+    if (!profile) {
+      return res.status(403).json({ message: 'Profile not found' });
+    }
 
     //check if user has admin role
-    //Note: we are using ProfileRepo directly here for simplicity
-    //In a real app, consider using a service layer
-
-    const repo = new ProfileRepo(); //get profile repo
-    const profile = await repo.findById(user.id);//get profile by user ID
-    if (!profile || profile.role !== 'admin') return res.status(403).json({ message: 'Admin only' });//if no profile or not admin, return 403
-
+    if (profile.role !== 'admin') {
+      return res.status(403).json({ message: 'Admin access required' });
+    }
     //user is admin, proceed to next middleware or route handler
     next();
   } catch (err: any) {
-    //if error, return 500 status with error message
-    return res.status(500).json({ message: err.message });
+    //log the error for debugging purposes
+    console.error('requireAdmin error:', err);
+    //return 500 status with error message
+    res.status(500).json({ message: 'Internal server error' });
   }
 }

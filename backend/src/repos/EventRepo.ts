@@ -22,7 +22,12 @@ export class EventRepo extends BaseRepo {
     const { data, error } = await this.client.from('events').select('*').eq('id', id).single();
     
     //Throw error if any issues
-    if (error) throw new Error(error.message);
+    if (error) {
+      if ((error as any).code === 'PGRST116') {
+        return null; // No rows found
+      }
+      throw new Error(error.message)
+    };
 
     //Return null if no data found
     if (!data) return null;
@@ -45,6 +50,9 @@ export class EventRepo extends BaseRepo {
   async edit(payload: Partial<Event>): Promise<Event> {
     //TODO: Update event data on Supabase based on ID
     const { data, error } = await this.client.from('events').update(payload).eq('id', payload.id).select().single();
+    
+    //Throw error if event is not match
+    if (!data) throw new Error('Event not found');
     
     //Throw error if any issues
     if (error) throw new Error(error.message);
