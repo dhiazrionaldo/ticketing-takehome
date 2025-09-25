@@ -1,12 +1,23 @@
 import { Request, Response, NextFunction } from 'express';
-import { createClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import 'dotenv/config';
 
 // Initialize Supabase client with service role key for admin operations
-const admin = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  { auth: { persistSession: false, detectSessionInUrl: false } }
-);
+let admin: SupabaseClient;
+
+function getAdminClient() {
+  if (!admin) {
+    if (!process.env.NODE_SUPABASE_URL || !process.env.NODE_SUPABASE_PRIVATE_KEY) {
+      throw new Error('Supabase URL or Private Key not set in .env');
+    }
+    admin = createClient(
+      process.env.NODE_SUPABASE_URL,
+      process.env.NODE_SUPABASE_PRIVATE_KEY,
+      { auth: { persistSession: false, detectSessionInUrl: false } }
+    );
+  }
+  return admin;
+}
 
 //TODO: Middleware to verify Supabase JWT token from Authorization header
 export async function verifySupabaseToken(req: Request, res: Response, next: NextFunction) {

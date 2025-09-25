@@ -1,12 +1,29 @@
-//Typescript Config DO NOT CHANGE
 {
   "compilerOptions": {
-    "target": "ES2020",
-    "module": "CommonJS",
-    "rootDir": "src",
-    "outDir": "dist",
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true
-  }
+    /* Language and Environment */
+    "target": "ES2020",                  /* Compile to modern JS */
+    "module": "CommonJS",                /* Use CommonJS for Node */
+    "lib": ["ES2020"],                   /* Available libraries */
+    "moduleResolution": "node",          /* Node.js module resolution */
+    "esModuleInterop": true,             /* Allow default imports from CJS modules */
+    "forceConsistentCasingInFileNames": true,
+    
+    /* Project Structure */
+    "rootDir": "src",                    /* Where your source files live */
+    "outDir": "dist",                    /* Where compiled JS goes */
+
+    /* Strictness */
+    "strict": true,                      /* Enable all strict checks */
+    "skipLibCheck": true,                /* Skip type checking of .d.ts files */
+
+    /* Debugging */
+    "sourceMap": true,                   /* Generate source maps for debugging */
+    "resolveJsonModule": true,           /* Allow importing .json files */
+    "allowJs": false                     /* Only compile .ts files */
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"],
+  "ts-node": {
+    "require": ["dotenv/config"]
+    }
 }
