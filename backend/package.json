@@ -1,0 +1,24 @@
+{
+  "name": "ticket-takehome-backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dhiazrionaldo/ticketing-takehome.git"
+  },
+  "author": "dhiaz rionaldo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dhiazrionaldo/ticketing-takehome/issues"
+  },
+  "homepage": "https://github.com/dhiazrionaldo/ticketing-takehome#readme",
+  "description": "",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.57.4",
+    "dotenv": "^17.2.2",
+    "express": "^5.1.0"
+  }
+}
