@@ -1,5 +1,6 @@
 import express from 'express';
 import dotenv from 'dotenv';
+import cors from "cors";
 import eventRoutes from './routes/EventRoute';
 import ticketRoutes from './routes/TicketRoute';
 import orderRoutes from './routes/OrderRoute';
@@ -7,6 +8,11 @@ import authRoutes from './routes/AuthRoute';
 
 dotenv.config();
 const app = express();
+
+
+// Enable CORS for all routes
+app.use(cors());
+
 app.use(express.json());
 
 app.use('/api/events', eventRoutes); //TODO: add event routes

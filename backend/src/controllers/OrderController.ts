@@ -11,6 +11,7 @@ export class OrderController {
         try {
         const dto: CreateOrderDto = req.body; //get data from request body
         const user = (req as any).user; //get authenticated user from request
+        
         //call service to create order
         const order = await this.service.purchase(user.id, dto);
         //if successful, return 200 status with created order data
