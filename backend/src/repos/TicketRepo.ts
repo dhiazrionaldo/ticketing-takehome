@@ -1,23 +1,68 @@
 import { BaseRepo } from './BaseRepo';
 import { Ticket } from '../models/Ticket';
 import { EventRepo } from './EventRepo';
+import { Event } from '../models/Ticket';
 
 export class TicketRepo extends BaseRepo {
 
     async getByEvent(event_id: string): Promise<Ticket[]> {
-        //TODO: Get ticket data by events from Supabase
-        const { data, error } = await this.client.from('tickets').select('*').eq('event_id', event_id);
+        // Get tickets with joined events
+        const { data, error } = await this.client
+            .from("tickets")
+            .select(
+            `
+            id,
+            event_id,
+            name,
+            price,
+            qty_total,
+            created_at,
+            events (
+                id,
+                title,
+                description,
+                venue,
+                capacity,
+                start_time,
+                end_time
+            )
+            `
+            )
+            .eq("event_id", event_id);
 
-        //Throw error if any issues
         if (error) throw new Error(error.message);
+        if (!data) return [];
 
-        //Return empty array if no data found and map data to Ticket model
-        return (data ?? []).map((r: any) => new Ticket(r.id, r.event_id, r.name, r.price, r.qty_total, r.created_at));
-    }
+        // Map rows to Ticket instances
+        return data.map((row: any) => {
+            const event = row.events
+            ? new Event(
+                row.events.id,
+                row.events.title,
+                row.events.description,
+                row.events.venue,
+                row.events.capacity,
+                row.events.start_time,
+                row.events.end_time
+                )
+            : undefined;
+
+            return new Ticket(
+            row.id,
+            row.event_id,
+            row.name,
+            row.price,
+            row.qty_total,
+            row.created_at,
+            event
+            );
+        });
+        }
+
 
     async getById(id: string): Promise<Ticket | null> {
         //TODO: Get ticket data based on ID from Supabase
-        const { data, error } = await this.client.from('tickets').select('*').eq('id', id).single();
+        const { data, error } = await this.client.from('tickets').select('*, events(id, title, description, venue, capacity, start_time, end_time)').eq('id', id).single();
         
         //Throw error if any issues
         if (error) throw new Error(error.message);
@@ -25,8 +70,29 @@ export class TicketRepo extends BaseRepo {
         //Return null if no data found
         if (!data) return null;
 
-        //Map data to Ticket model and return the ticket
-        return new Ticket(data.id, data.event_id, data.name, data.price, data.qty_total, data.created_at);
+        // Map to Event if available
+        const event = data.events
+            ? new Event(
+                data.events.id,
+                data.events.title,
+                data.events.description,
+                data.events.venue,
+                data.events.capacity,
+                data.events.start_date,
+                data.events.end_date
+            )
+            : undefined;
+
+        // Return mapped Ticket with optional Event
+        return new Ticket(
+            data.id,
+            data.event_id,
+            data.name,
+            data.price,
+            data.qty_total,
+            data.created_at,
+            event
+        );
     }
 
     async create(payload: Partial<Ticket>): Promise<Ticket> {
