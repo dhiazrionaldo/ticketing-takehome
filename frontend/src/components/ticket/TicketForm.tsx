@@ -13,50 +13,29 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Event } from "@/core/models/Event";
+import { Ticket } from "@/core/models/Ticket";
 
-/**
- * EventForm
- *
- * Purpose:
- *  - Handles creating & editing Event entities
- *  - Uses ShadCN Form + Input components with validation
- *
- * TODO:
- *  - TODO: Replace start/end time inputs with a DateTimePicker (ShadCN calendar + time)
- *  - TODO: Add capacity validation (>= 1)
- */
-const eventSchema = z.object({
-  title: z.string().min(3, "Title must be at least 3 characters"),
-  description: z.string().optional(),
-  venue: z.string().min(2, "Venue required"),
-  start_time: z.string().nonempty("Start time required"),
-  end_time: z.string().nonempty("End time required"),
-  capacity: z.coerce.number().min(1, "Capacity must be greater than 0"),
+// Schema for TicketForm validation
+const ticketSchema = z.object({
+  name: z.string().min(3, "Ticket name must be at least 3 characters"),
+  price: z.coerce.number().min(0, "Price must be greater than or equal 0"),
+  qty_total: z.coerce.number().min(0, "Total quantity must be greater than or equal 0"),
 });
 
-export type EventFormValues = z.infer<typeof eventSchema>;
+export type TicketFormValues = z.infer<typeof ticketSchema>;
 
-export function EventForm({
-  event,
-  onSubmit,
-}: {
-  event?: Event;
-  onSubmit: (values: EventFormValues) => Promise<void>;
-}) {
-  const form = useForm<EventFormValues>({
-    resolver: zodResolver(eventSchema),
+interface TicketFormProps {
+  ticket?: Ticket;
+  onSubmit: (values: TicketFormValues) => Promise<void>;
+}
+
+export function TicketForm({ ticket, onSubmit }: TicketFormProps) {
+  const form = useForm<TicketFormValues>({
+    resolver: zodResolver(ticketSchema),
     defaultValues: {
-      title: event?.title ?? "",
-      description: event?.description ?? "",
-      venue: event?.venue ?? "",
-      start_time: event?.start_time
-        ? new Date(event.start_time).toISOString().slice(0, 16)
-        : "",
-      end_time: event?.end_time
-        ? new Date(event.end_time).toISOString().slice(0, 16)
-        : "",
-      capacity: event?.capacity ?? 1,
+      name: ticket?.name ?? "",
+      price: ticket?.price ?? 0,
+      qty_total: ticket?.qty_total ?? 0,
     },
   });
 
@@ -68,12 +47,12 @@ export function EventForm({
       >
         <FormField
           control={form.control}
-          name="title"
+          name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Title</FormLabel>
+              <FormLabel>Ticket Name</FormLabel>
               <FormControl>
-                <Input placeholder="Event title" {...field} />
+                <Input placeholder="Enter ticket name" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -82,12 +61,12 @@ export function EventForm({
 
         <FormField
           control={form.control}
-          name="description"
+          name="price"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Description</FormLabel>
+              <FormLabel>Price</FormLabel>
               <FormControl>
-                <Input placeholder="Event description" {...field} />
+                <Input type="number" min={0} placeholder="Enter price" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -96,54 +75,12 @@ export function EventForm({
 
         <FormField
           control={form.control}
-          name="venue"
+          name="qty_total"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Venue</FormLabel>
+              <FormLabel>Total Quantity</FormLabel>
               <FormControl>
-                <Input placeholder="Event venue" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="start_time"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Start Time</FormLabel>
-              <FormControl>
-                <Input type="datetime-local" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="end_time"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>End Time</FormLabel>
-              <FormControl>
-                <Input type="datetime-local" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="capacity"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Capacity</FormLabel>
-              <FormControl>
-                <Input type="number" min={1} {...field} />
+                <Input type="number" min={0} placeholder="Enter total quantity" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -151,7 +88,7 @@ export function EventForm({
         />
 
         <Button type="submit" className="w-full">
-          {event ? "Update Event" : "Create Event"}
+          {ticket ? "Update Ticket" : "Create Ticket"}
         </Button>
       </form>
     </Form>

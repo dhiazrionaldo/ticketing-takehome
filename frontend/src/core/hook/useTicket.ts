@@ -1,83 +1,67 @@
-// src/core/hook/useEvent.ts
 "use client";
 
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { eventApi } from "../api/eventApi";
-import { Event } from "../models/Event";
-import { useAuthQuery } from "./useAuth";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { ticketApi } from "@/core/api/ticketApi";
+import { Ticket } from "@/core/models/Ticket";
 import toast from "react-hot-toast";
+import { useAuthQuery } from "./useAuth";
 
-export function useEvents() {
+export function useTickets(eventId: string) {
   const queryClient = useQueryClient();
-  const { user } = useAuthQuery() as { user: { accessToken?: string } };
-  const token = user?.accessToken;
+  const { user, isLoading: authLoading, refreshUser } = useAuthQuery();
 
-  // GET events (public)
-  const {
-    data: events = [],
-    isError,
-    error,
-    isLoading,
-  } = useQuery<Event[], Error>({
-    queryKey: ["events"],
-    queryFn: () => eventApi.listEvents(),
-    onError: (err: Error) => {
-      toast.error(err.message || "Failed to fetch events ❌");
+  // Wait for user token before doing anything
+  const ticketsQuery = useQuery<Ticket[], Error>({
+    queryKey: ["tickets", eventId],
+    queryFn: async () => {
+      // refresh user if token not ready
+      if (!user?.accessToken) {
+        await refreshUser();
+        if (!user?.accessToken) throw new Error("Not authenticated");
+      }
+      return ticketApi.listTicketsByEvent(eventId);
     },
+    enabled: !!eventId, // only if eventId exists
+    onError: (err: Error) => toast.error(err.message || "Failed to fetch tickets"),
   });
 
-  // CREATE
-  const createEvent = useMutation({
-    mutationFn: (payload: Partial<Event>) => {
-      if (!token) throw new Error("Not authenticated");
-      return eventApi.createEvent(payload, token);
+  // CREATE ticket
+  const createTicket = useMutation({
+    mutationFn: async (payload: Partial<Ticket>) => {
+      if (!user?.accessToken) await refreshUser();
+      if (!user?.accessToken) throw new Error("Not authenticated");
+      return ticketApi.createTicket(payload, user.accessToken);
     },
-    onSuccess: () => {
-      toast.success("Event created 🎉");
-      queryClient.invalidateQueries({ queryKey: ["events"] });
-    },
-    onError: (err: any) => {
-      toast.error(err.response?.data?.message || err.message || "Failed to create event ❌");
-    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["tickets", eventId] }),
   });
 
-  // UPDATE
-  const updateEvent = useMutation({
-    mutationFn: (payload: Partial<Event>) => {
-      if (!token) throw new Error("Not authenticated");
-      return eventApi.updateEvent(payload, token);
+  // UPDATE ticket
+  const updateTicket = useMutation({
+    mutationFn: async (payload: Partial<Ticket>) => {
+      if (!user?.accessToken) await refreshUser();
+      if (!user?.accessToken) throw new Error("Not authenticated");
+      return ticketApi.updateTicket(payload, user.accessToken);
     },
-    onSuccess: () => {
-      toast.success("Event updated ✅");
-      queryClient.invalidateQueries({ queryKey: ["events"] });
-    },
-    onError: (err: any) => {
-      toast.error(err.response?.data?.message || err.message || "Failed to update event ❌");
-    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["tickets", eventId] }),
   });
 
-  // DELETE
-  const deleteEvent = useMutation({
-    mutationFn: (payload: Partial<Event>) => {
-      if (!token) throw new Error("Not authenticated");
-      return eventApi.deleteEvent(payload, token);
+  // DELETE ticket
+  const deleteTicket = useMutation({
+    mutationFn: async (id: string) => {
+      if (!user?.accessToken) await refreshUser();
+      if (!user?.accessToken) throw new Error("Not authenticated");
+      return ticketApi.deleteTicket(id, user.accessToken);
     },
-    onSuccess: () => {
-      toast.success("Event deleted 🗑️");
-      queryClient.invalidateQueries({ queryKey: ["events"] });
-    },
-    onError: (err: any) => {
-      toast.error(err.response?.data?.message || err.message || "Failed to delete event ❌");
-    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["tickets", eventId] }),
   });
 
   return {
-    events,
-    isLoading,
-    isError,
-    error,
-    createEvent: createEvent.mutateAsync,
-    updateEvent: updateEvent.mutateAsync,
-    deleteEvent: deleteEvent.mutateAsync,
+    tickets: ticketsQuery.data ?? [],
+    isLoading: ticketsQuery.isLoading || authLoading,
+    isError: ticketsQuery.isError,
+    error: ticketsQuery.error,
+    createTicket: createTicket.mutateAsync,
+    updateTicket: updateTicket.mutateAsync,
+    deleteTicket: deleteTicket.mutateAsync,
   };
 }

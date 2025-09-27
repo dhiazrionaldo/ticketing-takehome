@@ -36,7 +36,7 @@ export default function EventPage() {
 
       {/* Create Event Sheet */}
       <Sheet open={openCreate} onOpenChange={setOpenCreate}>
-        <SheetContent>
+        <SheetContent forceMount >
           <SheetHeader>
             <SheetTitle>Create Event</SheetTitle>
           </SheetHeader>

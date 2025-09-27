@@ -1,16 +1,11 @@
 "use client";
 
-import { Event } from "@/core/models/Event";
-import { useEvents } from "@/core/hook/useEvent";
 import { useState } from "react";
-import { eventColumns } from "./EventColumn";
-import { EventForm, EventFormValues } from "./EventForm";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
+import { Ticket } from "@/core/models/Ticket";
+import { useTickets } from "@/core/hook/useTicket";
+import { TicketForm, TicketFormValues } from "./TicketForm";
+import { DataTable } from "@/components/ui/data-table";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -20,85 +15,92 @@ import {
   AlertDialogCancel,
   AlertDialogAction,
 } from "@/components/ui/alert-dialog";
-import { DataTable } from "@/components/ui/data-table";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import { ticketColumns } from "@/components/ticket/TicketColumn";
+import { useAuthQuery } from "@/core/hook/useAuth";
 
-/**
- * EventList
- *
- * Purpose:
- *  - Shows events in a ShadCN DataTable
- *  - Handles Create (Sheet), Edit (Sheet), Delete (AlertDialog)
- *
- * TODO:
- *  - TODO: Add global search bar
- *  - TODO: Add server-side pagination
- *  - TODO: Add optimistic updates for smoother UX
- */
-export function EventList({ events, refresh }: { events: Event[]; refresh: () => void }) {
-  const { createEvent, updateEvent, deleteEvent } = useEvents();
-  const [selected, setSelected] = useState<Event | null>(null);
+interface TicketListProps {
+  eventId: string;
+}
 
+export function TicketList({ eventId }: TicketListProps) {
+  const { tickets, createTicket, updateTicket, deleteTicket } = useTickets(eventId);
+  const [selected, setSelected] = useState<Ticket | null>(null);
   const [openCreate, setOpenCreate] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
-
-  const columns = eventColumns(
-    (event) => {
-      setSelected(event);
+  const { user, isLoading: authLoading } = useAuthQuery();
+  
+  const columns = ticketColumns(
+    (ticket) => {
+      setSelected(ticket);
       setOpenEdit(true);
     },
-    (event) => {
-      setSelected(event);
+    (ticket) => {
+      setSelected(ticket);
       setOpenDelete(true);
     }
   );
 
   return (
     <div className="space-y-4">
+      <div className="flex justify-between items-center">
+        <h2 className="text-xl font-semibold">Tickets</h2>
+        <Button onClick={() => setOpenCreate(true)}>
+          <Plus className="mr-2 h-4 w-4" /> Add Ticket
+        </Button>
+      </div>
 
-      {/* Data Table */}
-      <DataTable columns={columns} data={events} />
+      <DataTable columns={columns} data={tickets} />
 
-      {/* Edit Event Sheet */}
-      <Sheet open={openEdit} onOpenChange={setOpenEdit}>
-        <SheetContent>
+      {/* Create Ticket */}
+      <Sheet open={openCreate} onOpenChange={setOpenCreate}>
+        <SheetContent forceMount>
           <SheetHeader>
-            <SheetTitle>Edit Event</SheetTitle>
+            <SheetTitle>Create Ticket</SheetTitle>
+          </SheetHeader>
+          <TicketForm
+            onSubmit={async (values: TicketFormValues) => {
+              if (!user?.accessToken) return; // safety check
+              await createTicket({ ...values, event_id: eventId });
+              setOpenCreate(false);
+            }}
+          />
+        </SheetContent>
+      </Sheet>
+
+      {/* Edit Ticket */}
+      <Sheet open={openEdit} onOpenChange={setOpenEdit}>
+        <SheetContent forceMount>
+          <SheetHeader>
+            <SheetTitle>Edit Ticket</SheetTitle>
           </SheetHeader>
           {selected && (
-            <EventForm
-              event={selected}
-              onSubmit={async (values: EventFormValues) => {
-                await updateEvent({ ...selected, ...values });
+            <TicketForm
+              ticket={selected}
+              onSubmit={async (values: TicketFormValues) => {
+                await updateTicket({ ...selected, ...values });
                 setOpenEdit(false);
-                refresh();
               }}
             />
           )}
         </SheetContent>
       </Sheet>
 
-      {/* Delete Event Dialog */}
+      {/* Delete Ticket */}
       <AlertDialog open={openDelete} onOpenChange={setOpenDelete}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
-              Are you sure you want to delete{" "}
-              <span className="font-bold">{selected?.title}</span>?
+              Delete ticket <b>{selected?.name}</b>?
             </AlertDialogTitle>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setOpenDelete(false)}>
-              Cancel
-            </AlertDialogCancel>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={async () => {
-                if (selected) {
-                  await deleteEvent(selected);
-                  refresh();
-                }
+                if (selected) await deleteTicket(selected.id);
                 setOpenDelete(false);
               }}
             >

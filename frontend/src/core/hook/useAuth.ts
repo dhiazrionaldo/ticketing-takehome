@@ -41,7 +41,7 @@ export function useAuthQuery() {
     },
     // keep data for 5 minutes by default
     staleTime: 1000 * 60 * 5,
-    cacheTime: 1000 * 60 * 10,
+    // cacheTime: 1000 * 60 * 10,
     // we don't want automatic refetch intervals here; manual refresh via refreshUser is fine
     refetchOnWindowFocus: false,
   });

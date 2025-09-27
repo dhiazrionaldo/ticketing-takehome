@@ -1,53 +1,56 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Event } from "@/core/models/Event";
+import { Ticket } from "@/core/models/Ticket";
 import { Button } from "@/components/ui/button";
 
 /**
- * EventColumns
- *
+ * TicketColumns
+ * 
  * Purpose:
- *  - Defines how events are displayed in ShadCN DataTable
- *  - Provides action buttons (Edit, Delete)
- *
- * TODO:
- *  - TODO: Add column filters (search by title, venue)
- *  - TODO: Add formatting for date/time
+ *  - Defines how tickets are displayed in ShadCN DataTable
+ *  - Provides Edit & Delete actions
  */
-export const eventColumns = (
-  onEdit: (event: Event) => void,
-  onDelete: (event: Event) => void
-): ColumnDef<Event>[] => [
+export const ticketColumns = (
+  onEdit: (ticket: Ticket) => void,
+  onDelete: (ticket: Ticket) => void
+): ColumnDef<Ticket>[] => [
   {
-    accessorKey: "title",
-    header: "Title",
+    accessorKey: "name",
+    header: "Name",
   },
   {
-    accessorKey: "venue",
-    header: "Venue",
+    accessorKey: "price",
+    header: "Price",
+    cell: ({ row }) => `Rp. ${row.original.price.toLocaleString()}`,
   },
   {
-    accessorKey: "start_time",
-    header: "Start Time",
-    cell: ({ row }) => new Date(row.original.start_time).toLocaleString(),
+    accessorKey: "qty_total",
+    header: "Total Qty",
   },
   {
-    accessorKey: "end_time",
-    header: "End Time",
-    cell: ({ row }) => new Date(row.original.end_time).toLocaleString(),
+    accessorKey: "created_at",
+    header: "Created At",
+    cell: ({ row }) =>
+      row.original.created_at
+        ? new Date(row.original.created_at).toLocaleString()
+        : "-",
   },
   {
     id: "actions",
     header: "Actions",
     cell: ({ row }) => {
-      const event = row.original;
+      const ticket = row.original;
       return (
         <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={() => onEdit(event)}>
+          <Button variant="outline" size="sm" onClick={() => onEdit(ticket)}>
             Edit
           </Button>
-          <Button variant="destructive" size="sm" onClick={() => onDelete(event)}>
+          <Button
+            variant="destructive"
+            size="sm"
+            onClick={() => onDelete(ticket)}
+          >
             Delete
           </Button>
         </div>

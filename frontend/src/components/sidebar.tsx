@@ -42,9 +42,9 @@ export function Sidebar() {
   if (user?.role === "admin") {
     sidebarItems = {
       links: [
-        { label: "Events", href: "/events", icon: LineChartIcon },
+        { label: "Events", href: "/event", icon: LineChartIcon },
         { label: "Purchase", href: "/purchase", icon: ShoppingCartIcon },
-        { label: "Tickets", href: "/tickets", icon: TicketIcon },
+        { label: "Tickets", href: "/ticket", icon: TicketIcon },
       ],
     };
   } else {
