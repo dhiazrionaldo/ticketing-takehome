@@ -6,6 +6,20 @@ export class OrderController {
     //Initialize the OrderService
     private service = new OrderService();
 
+    //TODO: Implement listByTicket method to get all tickets for an event by call the services
+    listByTicket = async (req: Request, res: Response) => {
+        try {
+        const ticket_id = req.params.ticketId; //get event ID from request parameters
+        //call service to get all tickets for the event
+        const tickets = await this.service.listByTicket(ticket_id);
+        //if successful, return tickets as JSON response
+        res.json(tickets);
+        } catch (err: any) {
+        //if error, return 500 status with error message
+            res.status(500).json({ message: err.message });
+        }
+    };
+
     //TODO: Implement purchase method to create a new order by call the services
     purchase = async (req: Request, res: Response) => {
         try {

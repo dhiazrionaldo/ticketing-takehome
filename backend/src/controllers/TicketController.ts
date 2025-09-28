@@ -9,6 +9,33 @@ export class TicketController {
     private service = new TicketService();
     
     //TODO: Implement listByEvent method to get all tickets for an event by call the services
+    getAvailableTicket = async (req: Request, res: Response) => {
+        try {
+        //call service to get all tickets for the event
+        const tickets = await this.service.getAvailableTicket();
+        //if successful, return tickets as JSON response
+        res.json(tickets);
+        } catch (err: any) {
+        //if error, return 500 status with error message
+            res.status(500).json({ message: err.message });
+        }
+    };
+
+    //TODO: Implement listByEvent method to get all tickets for an event by call the services
+    getTicketById = async (req: Request, res: Response) => {
+        try {
+        const ticket_id = req.params.ticketId; //get event ID from request parameters
+        //call service to get all tickets for the event
+        const tickets = await this.service.listByTicketId(ticket_id);
+        //if successful, return tickets as JSON response
+        res.json(tickets);
+        } catch (err: any) {
+        //if error, return 500 status with error message
+            res.status(500).json({ message: err.message });
+        }
+    };
+
+    //TODO: Implement listByEvent method to get all tickets for an event by call the services
     listByEvent = async (req: Request, res: Response) => {
         try {
         const event_id = req.params.eventId; //get event ID from request parameters

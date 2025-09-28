@@ -11,6 +11,16 @@ export class TicketService {
         return this.repo.getByEvent(event_id);
     }
 
+    //TODO: Implement listByEvent method to get all tickets for a specific event
+    async listByTicketId(ticket_id: string): Promise<Ticket[]> {
+        return this.repo.getByTicketId(ticket_id);
+    }
+
+    //TODO: Implement getAllTicket method to get all tickets for a specific event
+    async getAvailableTicket(): Promise<Ticket[]> {
+        return this.repo.getAllAvailTickets();
+    }
+
     //TODO: Implement create method to create a new ticket
     async create(dto: CreateTicketDto): Promise<Ticket> {
         const payload: Partial<Ticket> = {

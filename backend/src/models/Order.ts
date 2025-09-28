@@ -8,7 +8,9 @@ export class Order {
     public qty: number,
     public total_amount: number,
     public status: string,
-    public created_at: string | null
+    public created_at: string | null,
+    public event?: Event,
+    public ticket?: Ticket
   ) {}
 }
 

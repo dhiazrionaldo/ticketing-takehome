@@ -31,4 +31,10 @@ export class OrderService {
     const order = await this.orderRepo.purchaseTicket(dto.ticket_id, user_id, dto.qty, total);
     return order;
   }
+
+  
+  //TODO: Implement listByTicket method to get all tickets for a specific event
+  async listByTicket(ticket_id: string): Promise<Order[]> {
+      return this.orderRepo.getByTicket(ticket_id);
+  }
 }

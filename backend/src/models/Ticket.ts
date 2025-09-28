@@ -1,15 +1,3 @@
-// Data model for Event (simplified)
-export class Event {
-  constructor(
-    public id: string,
-    public title: string,
-    public description: string,
-    public start_date: string,
-    public end_date: string,
-    public venue: string,
-    public capacity: number
-  ) {}
-}
 //Data model for Ticket
 export class Ticket {
   constructor(

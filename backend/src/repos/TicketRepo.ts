@@ -1,9 +1,110 @@
 import { BaseRepo } from './BaseRepo';
 import { Ticket } from '../models/Ticket';
 import { EventRepo } from './EventRepo';
-import { Event } from '../models/Ticket';
+import { Event } from '../models/Events';
 
 export class TicketRepo extends BaseRepo {
+    async getAllAvailTickets(): Promise<Ticket[]> {
+        // Get tickets with joined events
+        const { data, error } = await this.client
+            .from("tickets")
+            .select(`
+                id,
+                event_id,
+                name,
+                price,
+                qty_total,
+                created_at,
+                events (
+                    id,
+                    title,
+                    description,
+                    venue,
+                    capacity,
+                    start_time,
+                    end_time
+                )
+            `)
+            .gt("qty_total",0);
+       // Map rows to Ticket instances
+        return data.map((row: any) => {
+            const event = row.events
+            ? new Event(
+                row.events.id,
+                row.events.title,
+                row.events.description,
+                row.events.venue,
+                row.events.capacity,
+                row.events.start_time,
+                row.events.end_time
+                )
+            : undefined;
+
+            return new Ticket(
+            row.id,
+            row.event_id,
+            row.name,
+            row.price,
+            row.qty_total,
+            row.created_at,
+            event
+            );
+        });
+    }
+    
+    async getByTicketId(ticketId: string): Promise<Ticket[]> {
+        // Get tickets with joined events
+        const { data, error } = await this.client
+            .from("tickets")
+            .select(
+            `
+            id,
+            event_id,
+            name,
+            price,
+            qty_total,
+            created_at,
+            events (
+                id,
+                title,
+                description,
+                venue,
+                capacity,
+                start_time,
+                end_time
+            )
+            `
+            )
+            .eq("id", ticketId);
+
+        if (error) throw new Error(error.message);
+        if (!data) return [];
+
+        // Map rows to Ticket instances
+        return data.map((row: any) => {
+            const event = row.events
+            ? new Event(
+                row.events.id,
+                row.events.title,
+                row.events.description,
+                row.events.venue,
+                row.events.capacity,
+                row.events.start_time,
+                row.events.end_time
+                )
+            : undefined;
+
+            return new Ticket(
+            row.id,
+            row.event_id,
+            row.name,
+            row.price,
+            row.qty_total,
+            row.created_at,
+            event
+            );
+        });
+    }
 
     async getByEvent(event_id: string): Promise<Ticket[]> {
         // Get tickets with joined events
@@ -57,7 +158,7 @@ export class TicketRepo extends BaseRepo {
             event
             );
         });
-        }
+    }
 
 
     async getById(id: string): Promise<Ticket | null> {
