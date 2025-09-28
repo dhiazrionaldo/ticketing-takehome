@@ -1,6 +1,6 @@
 <h1>Ticketing Application</h1>
 
-This application is created with NodeJS Version 22.16.0, before installing please ensure that you have the same node js version. <br>
+This application is created with **NodeJS Version 22.16.0**, before installing **please ensure that you have the same node js version**. <br>
 **Back End**
 For the Backend it use .env in order to map the supabase key.<br>
 Also it use express package to host the applications. <br>
@@ -9,14 +9,16 @@ once the npm install is done, you can run **npm run dev** to start the back end 
 <br>
 **Back End Note**<br>
 If the port is already used in you local machine, you can change the port on the **.ENV** file with **PORT** tag.<br>
-The .env file will be share in private message to to set it up please just copy the **.env** file to the root of the backend project (sample path: **your_clone_path**/ticketing-takehome/backend/)
+if The .env file is not cloned, please let me know. I will be share in private message to to set it up please just copy the **.env** file to the root of the backend project (sample path: **your_clone_path**/ticketing-takehome/backend/)
 
 <br>
 <br>
-**Front End**<br>
+
+**Front End** <br>
 The front end using nextjs 15 and with the help of shadcn framework as the ui base line, the reason why using shadcn, because it has many plug and play component ready that require minimum adjustment, and also the using shadcn we only import what we need to the projects.<br>
 and also using react-table component for stateless to fetch the data after a change of the data without calling the API again.<br>
-
+if The .env file is not cloned, please let me know. I will be share in private message to to set it up please just copy the **.env.local** file to the root of the frontend project 
+<br>
 ## Installation
 <br>
 Clone the repository:<br>
@@ -71,7 +73,7 @@ npm run dev:all<br>
 - Backend API → http://localhost:3001 (example)<br>
 - Frontend → http://localhost:3000<br>
 
-### 📄 `package.json` (root)
+###  `package.json` (root)
 ```json
 {
   "name": "ticket-takehome-root",
