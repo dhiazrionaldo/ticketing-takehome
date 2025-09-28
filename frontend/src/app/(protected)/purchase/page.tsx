@@ -9,6 +9,7 @@ import { TicketList } from "@/components/ticket/TicketList";
 import { EventForm, EventFormValues } from "@/components/events/EventForm";
 import { useAuthQuery } from "@/core/hook/useAuth";
 import { useQueryClient } from "@tanstack/react-query";
+import { PurchaseForm } from "@/components/purchase/PurchaseForm";
 
 /**
  * PurchasePage
@@ -32,6 +33,7 @@ export default function PurchasePage() {
   // Sheet state for managing tickets per event
   const [openTicketSheet, setOpenTicketSheet] = useState(false);
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
+  const [selectedTicketId, setSelectedTicketId] = useState<string>("");
   const [selectedEventTitle, setSelectedEventTitle] = useState<string>("");
 
   const queryClient = useQueryClient();
@@ -47,7 +49,7 @@ export default function PurchasePage() {
         <h1 className="text-2xl font-semibold">Purchase Tickets</h1>
       </div>
 
-      {/* Event List Stub */}
+      {/* Event List Component and loading */}
       {isLoading ? (
         <div className="flex items-center gap-2">
           Loading ...
@@ -69,8 +71,9 @@ export default function PurchasePage() {
                   disabled={!token || authLoading}
                   size="sm"
                   onClick={() => {
-                    setSelectedEventId(event.id);
-                    setSelectedEventTitle(event.title);
+                    setSelectedEventId(ticket.event.id);
+                    setSelectedTicketId(ticket.id);
+                    setSelectedEventTitle(ticket.event.title);
                     setOpenTicketSheet(true);
                     
                   }}
@@ -100,12 +103,12 @@ export default function PurchasePage() {
 
       {/* Ticket Sheet */}
       <Sheet open={openTicketSheet} onOpenChange={setOpenTicketSheet}>
-        <SheetContent forceMount className="!w-[95vw] !max-w-[900px] !h-[95vh] !p-6">
+        <SheetContent forceMount className="!w-[95vw] !max-w-[500px] !h-[95vh] !p-6">
           <SheetHeader>
             <SheetTitle>Tickets for: {selectedEventTitle}</SheetTitle>
           </SheetHeader>
           {selectedEventId && (
-            <TicketList eventId={selectedEventId} /> // Stub: Handles create/edit/delete
+            <PurchaseForm token={user?.accessToken} ticketId={selectedTicketId} onSuccess={() => setOpenTicketSheet(false)} />
           )}
         </SheetContent>
       </Sheet>

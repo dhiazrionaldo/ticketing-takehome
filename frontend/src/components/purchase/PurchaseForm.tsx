@@ -13,74 +13,84 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Ticket } from "@/core/models/Ticket";
+import { usePurchase } from "@/core/hook/usePurchase";
+import { useTicketById, useTickets } from "@/core/services/TicketServices";
+import toast from "react-hot-toast";
 
-// Schema for TicketForm validation
-const ticketSchema = z.object({
-  name: z.string().min(3, "Ticket name must be at least 3 characters"),
-  price: z.coerce.number().min(0, "Price must be greater than or equal 0"),
-  qty_total: z.coerce.number().min(0, "Total quantity must be greater than or equal 0"),
+const purchaseSchema = z.object({
+  qty: z.coerce.number().min(1, "Quantity must be at least 1"),
 });
 
-export type TicketFormValues = z.infer<typeof ticketSchema>;
+export type PurchaseFormValues = z.infer<typeof purchaseSchema>;
 
-interface TicketFormProps {
-  ticket?: Ticket;
-  onSubmit: (values: TicketFormValues) => Promise<void>;
+interface PurchaseFormProps {
+  ticketId: string;
+  token: string | undefined;
+  onSuccess?: () => void;
 }
 
-export function TicketForm({ ticket, onSubmit }: TicketFormProps) {
-  const form = useForm<TicketFormValues>({
-    resolver: zodResolver(ticketSchema),
+export function PurchaseForm({ ticketId, token, onSuccess }: PurchaseFormProps) {
+  const { tickets, isLoading } = useTicketById(ticketId);
+  const ticket = tickets?.[0]; 
+  const {purchaseOrders, isLoading: purchaseLoading} = usePurchase(ticketId, token);
+  
+  const form = useForm<PurchaseFormValues>({
+    resolver: zodResolver(purchaseSchema),
     defaultValues: {
-      name: ticket?.name ?? "",
-      price: ticket?.price ?? 0,
-      qty_total: ticket?.qty_total ?? 0,
+      qty: 1,
     },
   });
 
+  const handleSubmit = async (values: PurchaseFormValues) => {
+    if (!ticket) return;
+
+    if (values.qty > ticket.qty_total) {
+      toast.error(`Quantity cannot exceed remaining tickets (${ticket.qty_total})`);
+      return;
+    }
+
+    await purchaseOrders({
+      ticket_id: ticket.id,
+      qty: values.qty,
+    });
+
+    toast.success("Purchase successful!");
+    form.reset({ qty: 1 });
+
+    if (onSuccess) onSuccess();
+  };
+
+  if (isLoading) return <div>Loading...</div>;
+
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-4"
-      >
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Ticket Name</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter ticket name" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+        <div className="space-y-2">
+          <h3 className="text-lg font-semibold">{ticket.name}</h3>
+          <p>Event: {ticket.event?.title}</p>
+          <p>
+            Price:{" "}
+            {new Intl.NumberFormat("id-ID", {
+              style: "currency",
+              currency: "IDR",
+            }).format(ticket.price)}
+          </p>
+          <p>Remaining Tickets: {ticket.qty_total}</p>
+        </div>
 
         <FormField
           control={form.control}
-          name="price"
+          name="qty"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Price</FormLabel>
+              <FormLabel>Purchase Quantity</FormLabel>
               <FormControl>
-                <Input type="number" min={0} placeholder="Enter price" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="qty_total"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Total Quantity</FormLabel>
-              <FormControl>
-                <Input type="number" min={0} placeholder="Enter total quantity" {...field} />
+                <Input
+                  type="number"
+                  min={1}
+                  max={ticket.qty_total}
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -88,7 +98,7 @@ export function TicketForm({ ticket, onSubmit }: TicketFormProps) {
         />
 
         <Button type="submit" className="w-full">
-          {ticket ? "Update Ticket" : "Create Ticket"}
+          Purchase
         </Button>
       </form>
     </Form>

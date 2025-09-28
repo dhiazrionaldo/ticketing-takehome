@@ -12,6 +12,19 @@ import { Ticket } from "@/core/models/Ticket";
  *  - Encapsulate TanStack Query for Ticket CRUD
  *  - Cache tickets per-event
  */
+
+export function useTicketById(ticketId: string) {
+ // list tickets for one event
+  const TicketsByIdQuery = useQuery<Ticket[], Error>({
+    queryKey: ["tickets_byId",ticketId],
+    queryFn: () => ticketApi.listTicketsById(ticketId),
+  });
+  return {
+    tickets: TicketsByIdQuery.data ?? [],
+    isLoading: TicketsByIdQuery.isLoading,
+    error: TicketsByIdQuery.error,
+  };
+}
 export function useTickets(eventId: string) {
   const queryClient = useQueryClient();
   
@@ -21,6 +34,7 @@ export function useTickets(eventId: string) {
     queryFn: () => ticketApi.listTickets(),
   });
 
+    
   // list tickets for one event
   const ticketsQuery = useQuery<Ticket[], Error>({
     queryKey: ["tickets", eventId],

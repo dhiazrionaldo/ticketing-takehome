@@ -21,7 +21,38 @@ export class TicketApi {
       `/tickets`,
       { method: "GET" }
     );
-    console.table(data);
+    
+    return data.map((row) => {
+      const event = row.event
+        ? new Event(
+            row.event.id,
+            row.event.title,
+            row.event.description,
+            row.event.venue,
+            row.event.start_time,
+            row.event.end_time,
+            row.event.capacity
+          )
+        : undefined;
+
+      return new Ticket(
+        row.id,
+        row.event_id,
+        row.name,
+        row.price,
+        row.qty_total,
+        row.created_at,
+        event
+      );
+    });
+  }
+
+  async listTicketsById(ticketId: string): Promise<Ticket[]> {
+    const data = await this.client.request<any[]>(
+      `/tickets/ticket/${ticketId}`,
+      { method: "GET" }
+    );
+
     return data.map((row) => {
       const event = row.event
         ? new Event(
