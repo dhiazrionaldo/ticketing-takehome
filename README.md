@@ -54,4 +54,34 @@ npm run dev:all<br>
 - **cors** – for cross origin allowed.
 
 
+## Tutorial for New Laptop Setup
+<br>
+- Install Node.js 20+<br>
+- Clone this repo → git clone https://github.com/dhiazrionaldo/ticket-takehome.git<br>
+- Go into folder → cd ticket-takehome<br>
+- Install dependencies → npm run install:all<br>
+- Set up environment variables:<br>
+- backend/.env<br>
+- frontend/.env.local<br>
+- Run project → npm run dev<br>
+<br>
+<br>
 
+## Access app:
+- Backend API → http://localhost:3001 (example)<br>
+- Frontend → http://localhost:3000<br>
+
+### 📄 `package.json` (root)
+```json
+{
+  "name": "ticket-takehome-root",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "install:all": "npm --prefix backend install && npm --prefix frontend install",
+    "dev": "npm --prefix backend run dev & npm --prefix frontend run dev",
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "build": "npm --prefix backend run build && npm --prefix frontend run build"
+  }
+}
