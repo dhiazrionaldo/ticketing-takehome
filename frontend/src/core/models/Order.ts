@@ -1,4 +1,7 @@
 //TODO: Model data for Order
+import { Event } from "./Event";
+import { Ticket } from "./Ticket";
+
 export class Order {
   constructor(
     public id: string,
@@ -7,6 +10,8 @@ export class Order {
     public ticket_id: string,
     public qty: number,
     public total_amount: number,
-    public status: string
+    public status: string,
+    public event?: Event, // Event relation
+    public ticket?: Ticket // Ticket relation
   ) {}
 }

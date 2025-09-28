@@ -1,9 +1,10 @@
 // src/core/api/eventApi.ts
 import { ApiClient } from "./apiClient";
 import { Ticket } from "@/core/models/Ticket";
+import { Order } from "@/core/models/Order";
 import { Event } from "@/core/models/Event";
 
-export class TicketApi {
+export class PurchaseApi {
   private client: ApiClient;
 
   constructor(baseUrl: string) {
@@ -14,42 +15,9 @@ export class TicketApi {
    * list tickets for an event (with event join)
    * TODO: Add pagination in the future
    */
-
-  async listTickets(): Promise<Ticket[]> {
-    //Get all available ticket for purchase purposes
+  async listPurchaseByTicket(ticketId: string): Promise<Ticket[]> {
     const data = await this.client.request<any[]>(
-      `/tickets`,
-      { method: "GET" }
-    );
-    console.table(data);
-    return data.map((row) => {
-      const event = row.event
-        ? new Event(
-            row.event.id,
-            row.event.title,
-            row.event.description,
-            row.event.venue,
-            row.event.start_time,
-            row.event.end_time,
-            row.event.capacity
-          )
-        : undefined;
-
-      return new Ticket(
-        row.id,
-        row.event_id,
-        row.name,
-        row.price,
-        row.qty_total,
-        row.created_at,
-        event
-      );
-    });
-  }
-
-  async listTicketsByEvent(eventId: string): Promise<Ticket[]> {
-    const data = await this.client.request<any[]>(
-      `/tickets/event/${eventId}`,
+      `/orders/purchase/${ticketId}`,
       { method: "GET" }
     );
 
@@ -79,12 +47,12 @@ export class TicketApi {
   }
 
   /**
-   * create ticket under event
+   * create purchase under event
    */
-  async createTicket(payload: Partial<Ticket>,token?: string): Promise<Ticket> {
+  async purchaseTicket(payload: Partial<Ticket>,token?: string): Promise<Ticket> {
     if (!token) throw new Error("Admin token required to create ticket");
     
-    const row = await this.client.request<any>(`/tickets`, {
+    const row = await this.client.request<any>(`/orders/purchase`, {
       method: "POST",
       data: payload,
     }
@@ -136,4 +104,4 @@ export class TicketApi {
 }
 
 // Singleton export
-export const ticketApi = new TicketApi(process.env.NEXT_PUBLIC_API_URL!);
+export const purchaseApi = new PurchaseApi(process.env.NEXT_PUBLIC_API_URL!);

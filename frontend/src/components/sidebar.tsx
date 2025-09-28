@@ -42,8 +42,8 @@ export function Sidebar() {
   if (user?.role === "admin") {
     sidebarItems = {
       links: [
-        { label: "Events", href: "/event", icon: LineChartIcon },
         { label: "Purchase", href: "/purchase", icon: ShoppingCartIcon },
+        { label: "Events", href: "/event", icon: LineChartIcon },
         { label: "Tickets", href: "/ticket", icon: TicketIcon },
       ],
     };

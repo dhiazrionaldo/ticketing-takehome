@@ -13,12 +13,7 @@ export function useEvents() {
   const token = user?.accessToken;
 
   // GET events (public)
-  const {
-    data: events = [],
-    isError,
-    error,
-    isLoading,
-  } = useQuery<Event[], Error>({
+  const {data: events = [],isError,error,isLoading} = useQuery<Event[], Error>({
     queryKey: ["events"],
     queryFn: () => eventApi.listEvents(),
     onError: (err: Error) => {

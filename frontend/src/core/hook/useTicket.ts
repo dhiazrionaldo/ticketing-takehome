@@ -6,8 +6,29 @@ import { Ticket } from "@/core/models/Ticket";
 import toast from "react-hot-toast";
 import { useAuthQuery } from "./useAuth";
 
+export function useAvailableTickets() {
+  const { user, isLoading: authLoading, refreshUser } = useAuthQuery() as {
+    user: { accessToken?: string } | null;
+    isLoading: boolean;
+    refreshUser: () => Promise<void>;
+  };
+
+  // GET tickets for event (wait for auth to finish and token available)
+  const ticketsAvailableQuery = useQuery<Ticket[], Error>({
+    queryKey: ["avail_tickets"],
+    queryFn: async () => {
+      if (!user?.accessToken) throw new Error("Not authenticated");
+      return ticketApi.listTickets();
+    },
+    enabled: !authLoading && !!user?.accessToken,
+    onError: (err: Error) => toast.error(err.message || "Failed to fetch tickets"),
+  });
+
+  return {
+    availableTickets: ticketsAvailableQuery.data ?? [],
+  };
+}
 export function useTickets(eventId: string) {
-  const queryClient = useQueryClient();
   const { user, isLoading: authLoading, refreshUser } = useAuthQuery() as {
     user: { accessToken?: string } | null;
     isLoading: boolean;
@@ -54,6 +75,7 @@ export function useTickets(eventId: string) {
 
   return {
     tickets: ticketsQuery.data ?? [],
+    availableTickets: ticketsAvailableQuery.data ?? [],
     isLoading: ticketsQuery.isLoading || authLoading,
     isError: ticketsQuery.isError,
     error: ticketsQuery.error,

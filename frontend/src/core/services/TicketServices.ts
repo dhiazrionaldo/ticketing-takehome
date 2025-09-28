@@ -14,6 +14,12 @@ import { Ticket } from "@/core/models/Ticket";
  */
 export function useTickets(eventId: string) {
   const queryClient = useQueryClient();
+  
+   // list tickets for one event
+  const availTicketsQuery = useQuery<Ticket[], Error>({
+    queryKey: ["avail_tickets"],
+    queryFn: () => ticketApi.listTickets(),
+  });
 
   // list tickets for one event
   const ticketsQuery = useQuery<Ticket[], Error>({
@@ -47,6 +53,7 @@ export function useTickets(eventId: string) {
 
   return {
     tickets: ticketsQuery.data ?? [],
+    availTickets: availTicketsQuery.data ?? [],
     isLoading: ticketsQuery.isLoading,
     error: ticketsQuery.error,
     createTicket: createTicket.mutateAsync,
