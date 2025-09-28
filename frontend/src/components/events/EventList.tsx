@@ -73,7 +73,7 @@ export function EventList({ events, refresh }: { events: Event[]; refresh: () =>
               onSubmit={async (values: EventFormValues) => {
                 await updateEvent({ ...selected, ...values });
                 setOpenEdit(false);
-                refresh();
+                // refresh();
               }}
             />
           )}

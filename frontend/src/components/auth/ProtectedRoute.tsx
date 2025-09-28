@@ -1,33 +1,33 @@
 "use client";
-
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/core/hook/useAuth";
+import { useAuthQuery } from "@/core/hook/useAuth";
+import { Loader2 } from "lucide-react";
 
-/**
- * ProtectedRoute component
- *
- * Purpose:
- *  - Wraps pages/components that require authentication.
- *  - Redirects to /login if user is not logged in.
- *
- * TODO:
- *  - Add role-based access (e.g., admin only).
- *  - Add loading spinner while checking auth state.
- */
 export function ProtectedRoute({ children }: { children: ReactNode }) {
-  const { user, loading } = useAuth();
+  const { user, isLoading } = useAuthQuery();
   const router = useRouter();
+  const [redirecting, setRedirecting] = useState(false);
 
   useEffect(() => {
-    // TODO: handle loading state (e.g., show spinner)
-    if (!loading && !user) {
-      router.push("/login");
+    if (!isLoading && !user) {
+      setRedirecting(true); // flag to show loader
+      console.log(user)
+      router.push("/");
     }
-  }, [user, loading, router]);
+  }, [isLoading, user, router]);
 
-  if (loading) {
-    return <div className="flex justify-center items-center">Loading...</div>;
+  if (isLoading == true || redirecting == true) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Loader2 className="animate-spin h-8 w-8 mr-2" /> Loading...
+      </div>
+    );
+  }
+
+  if (!user) {
+    // shouldn't happen, just in case
+    return null;
   }
 
   return <>{children}</>;

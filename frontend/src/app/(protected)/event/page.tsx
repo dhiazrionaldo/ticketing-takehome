@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useEvents } from "@/core/hook/useEvent";
 import { Button } from "@/components/ui/button";
 import { Loader2, Plus } from "lucide-react";
 import { EventForm } from "@/components/events/EventForm";
 import { EventList } from "@/components/events/EventList";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { useQueryClient } from "@tanstack/react-query";
 
 /**
  * EventPage
@@ -23,6 +24,11 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 export default function EventPage() {
   const { events, isLoading, createEvent, refresh } = useEvents();
   const [openCreate, setOpenCreate] = useState(false);
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
+  },[queryClient]);
 
   return (
     <div className="p-6 space-y-6">

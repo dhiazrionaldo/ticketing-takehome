@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useEvents } from "@/core/hook/useEvent";
 import { Button } from "@/components/ui/button";
 import { Loader2, Plus } from "lucide-react";
@@ -8,6 +8,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { TicketList } from "@/components/ticket/TicketList";
 import { EventForm, EventFormValues } from "@/components/events/EventForm";
 import { useAuthQuery } from "@/core/hook/useAuth";
+import { useQueryClient } from "@tanstack/react-query";
 
 /**
  * TicketPage Stub
@@ -34,6 +35,12 @@ export default function TicketPage() {
   const [openTicketSheet, setOpenTicketSheet] = useState(false);
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
   const [selectedEventTitle, setSelectedEventTitle] = useState<string>("");
+
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
+  },[queryClient]);
 
   return (
     <div className="p-6 space-y-6">
