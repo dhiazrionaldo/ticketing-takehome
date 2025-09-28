@@ -16,3 +16,42 @@ The .env file will be share in private message to to set it up please just copy 
 **Front End**<br>
 The front end using nextjs 15 and with the help of shadcn framework as the ui base line, the reason why using shadcn, because it has many plug and play component ready that require minimum adjustment, and also the using shadcn we only import what we need to the projects.<br>
 and also using react-table component for stateless to fetch the data after a change of the data without calling the API again.<br>
+
+## Installation
+<br>
+Clone the repository:<br>
+<br>
+```bash<br>
+git clone https://github.com/your-username/ticket-takehome.git<br>
+cd ticket-takehome<br>
+<br>
+Dependencies Installation :<br>
+Run this command below :<br>
+npm run install:all<br>
+<br>
+Run the project :<br>
+Run this command below :<br>
+npm run dev:all<br>
+
+## Techstack Details 
+### Frontend
+- **Next.js 15** – React framework for server-side rendering & routing.
+- **React 19** – Latest React for building UI.
+- **TailwindCSS 4** – Utility-first styling framework.
+- **Radix UI** – Accessible UI primitives.
+- **ShadCN Components** – Headless, customizable UI components.
+- **TanStack Query & Table** – Data fetching + table management.
+- **Supabase** – Authentication & database (Postgres).
+- **Zod** – Schema validation.
+- **React Hook Form** – Form handling.
+- **Axios** – API calls.
+- **React Hot Toast** – Toast notifications.
+
+### Backend
+- **Supabase SSR & Supabase-js** – Database connection & server-side rendering helpers.
+- **Express.js (or custom)** – API endpoints.
+- **TypeScript** – Strict typing support.
+- **cors** – for cross origin allowed.
+
+
+
