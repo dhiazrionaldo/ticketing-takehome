@@ -10,11 +10,12 @@ for user role, you can sign up directly from the applications.<br>
 To close the running app you can push ctrl+c or ctrl+z <br>
 <br>
 <br>
-This application is created with **NodeJS Version 22.16.0**, before installing **please ensure that you have the same node js version**. <br>
+This application is created with <strong>NodeJS Version 22.16.0</strong>, before installing <strong>please ensure that you have the same node js version</strong>. <br>
 **Back End**
 For the Backend it use .env in order to map the supabase key.<br>
 Also it use express package to host the applications. <br>
-the Default port is set to 3001 for back end, once you clone the project, please go to the path : **your_clone_path**/ticketing-takehome/backend/ run **npm install** in order to install all the packages.<br>
+<br>
+the Default port is set to 3001 for back end, once you clone the project, <strong>In Order to run separately</strong> please go to the path : <strong>your_clone_path</strong>/ticketing-takehome/backend/ run **npm install** in order to install all the packages.<br>
 once the npm install is done, you can run **npm run dev** to start the back end with port 3001 (it's set in the .env file). <br>
 <br>
 <strong>Back End Note</strong><br>
@@ -27,7 +28,8 @@ if The .env file is not cloned, please let me know. I will be share in private m
 **Front End** <br>
 The front end using nextjs 15 and with the help of shadcn framework as the ui base line, the reason why using shadcn, because it has many plug and play component ready that require minimum adjustment, and also the using shadcn we only import what we need to the projects.<br>
 and also using react-table component for stateless to fetch the data after a change of the data without calling the API again.<br>
-if The .env file is not cloned, please let me know. I will be share in private message to to set it up please just copy the **.env.local** file to the root of the frontend project 
+if The .env file is not cloned, please let me know. 
+<strong>In Order to run separately</strong> please go to the path : <strong>your_clone_path</strong>/ticketing-takehome/backend/ run **npm install** in order to install all the packages.<br>
 <br>
 ## Installation
 <br>
