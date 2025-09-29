@@ -15,9 +15,11 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
-import { Loader2, Eye, EyeOff } from "lucide-react";
+import { Loader2, Eye, EyeOff, UserPlus2Icon, LogInIcon } from "lucide-react";
 import toast from "react-hot-toast";
 import { useState } from "react";
+import { Separator } from "@radix-ui/react-separator";
+import Link from "next/link";
 
 /**
  * LoginForm schema
@@ -68,74 +70,93 @@ export function LoginForm() {
   }
 
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-4 max-w-sm mx-auto"
-      >
-        <h2 className="text-xl font-semibold">Login</h2>
+    <div className='w-96 rounded-md border p-5 relative bg-slate-900 space-y-4'>
+      <div className='flex justify-center gap-2'>
+          <h1 className='text-2xl font-bold'>Welcome to <b className="uppercase">TICKETING</b></h1>
+      </div>
+      <Separator />
 
-        {/* Email Field */}
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input placeholder="you@example.com" type="email" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+      {/* add google auth in the future */}
+     
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-4 max-w-sm mx-auto"
+          >
+            <h2 className="text-xl font-semibold">Login</h2>
 
-        {/* Password Field with Toggle */}
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Password</FormLabel>
-              <div className="relative">
-                <FormControl>
-                  <Input
-                    placeholder="********"
-                    type={showPassword ? "text" : "password"}
-                    {...field}
-                  />
-                </FormControl>
-                <button
-                  type="button"
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                  onClick={() => setShowPassword((prev) => !prev)}
-                  tabIndex={-1}
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-4 w-4" />
-                  ) : (
-                    <Eye className="h-4 w-4" />
-                  )}
-                </button>
-              </div>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+            {/* Email Field */}
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input placeholder="you@example.com" type="email" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-        {/* Submit */}
-        <Button
-          type="submit"
-          className="w-full"
-          disabled={form.formState.isSubmitting}
-        >
-          {form.formState.isSubmitting ? (
-            <Loader2 className="animate-spin h-4 w-4" />
-          ) : (
-            "Login"
-          )}
-        </Button>
-      </form>
-    </Form>
+            {/* Password Field with Toggle */}
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <div className="relative">
+                    <FormControl>
+                      <Input
+                        placeholder="********"
+                        type={showPassword ? "text" : "password"}
+                        {...field}
+                      />
+                    </FormControl>
+                    <button
+                      type="button"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                      onClick={() => setShowPassword((prev) => !prev)}
+                      tabIndex={-1}
+                    >
+                      {showPassword ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
+                    </button>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Submit */}
+            <Button
+              type="submit"
+              className="w-full flex w-full bg-blue-800 text-white hover:bg-blue-900 justify-center"
+              disabled={form.formState.isSubmitting}
+            >
+              {form.formState.isSubmitting ? (
+                
+                <Loader2 className="animate-spin h-4 w-4" />
+              ) : (
+                <>
+                <LogInIcon size={15}  /> Login
+                </>
+              )}
+            </Button>
+          </form>
+        </Form>
+        <Separator />
+        <div className='flex justify-center'>
+            <p>don't have an account?</p>
+          </div>
+          <Link href="/signup">
+            <Button className='flex w-full'><UserPlus2Icon size={15}  /> Sign Up</Button>
+          </Link>
+    </div>
   );
 }

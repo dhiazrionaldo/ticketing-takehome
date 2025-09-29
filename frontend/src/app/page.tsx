@@ -19,7 +19,7 @@ export default function Home() {
             Your Event Ticketing Partners!
           </p>
           <div className="flex flex-row items-center text-center">
-            <div className="flex mt-2">
+            <div className="flex space-x-3 mt-5">
               <HomeButton />
             </div>
           </div>

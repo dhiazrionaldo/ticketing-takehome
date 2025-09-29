@@ -60,7 +60,7 @@ export default function Profile() {
 
           {/* User info */}
           <div>
-            <p className="text-xs">{user?.fullName ?? "Anonymous"}</p>
+            <p className="text-xs mr-5">{user?.fullName ?? "Anonymous"}</p>
             <p className="text-xs">{user?.email}</p>
           </div>
         </div>

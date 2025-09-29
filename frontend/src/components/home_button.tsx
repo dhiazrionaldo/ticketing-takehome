@@ -30,7 +30,7 @@ export default function HomeButton() {
   }
 
   const isAdmin = user?.role === "admin";
-
+  const isUser = user?.role === "user";
   return (
     <div>
       {loading ? (
@@ -39,6 +39,12 @@ export default function HomeButton() {
         </Button>
       ) : isAdmin ? (
         <Link href="/event" onClick={() => setLoading(true)}>
+          <Button onClick={() => setLoading(true)}>
+            Proceed to App <ArrowRight />
+          </Button>
+        </Link>
+      ) : isUser ? (
+        <Link href="/purchase" onClick={() => setLoading(true)}>
           <Button onClick={() => setLoading(true)}>
             Proceed to App <ArrowRight />
           </Button>

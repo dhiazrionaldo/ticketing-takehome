@@ -25,12 +25,12 @@ interface TicketListProps {
 }
 
 export function TicketList({ eventId }: TicketListProps) {
-  const { tickets, createTicket, updateTicket, deleteTicket } = useTickets(eventId);
   const [selected, setSelected] = useState<Ticket | null>(null);
   const [openCreate, setOpenCreate] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
   const { user, isLoading: authLoading } = useAuthQuery();
+  const { tickets, createTicket, updateTicket, deleteTicket } = useTickets(eventId, user?.accessToken);
   
   const columns = ticketColumns(
     (ticket) => {
