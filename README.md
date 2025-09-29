@@ -7,9 +7,9 @@ for testing with admin use this account:<br>
 - Password: **Admin@123**<br>
 for user role, you can sign up directly from the applications.<br>
 <br>
-To close the running app you can push **ctrl+c** or **ctrl+z**
-
-
+To close the running app you can push ctrl+c or ctrl+z <br>
+<br>
+<br>
 This application is created with **NodeJS Version 22.16.0**, before installing **please ensure that you have the same node js version**. <br>
 **Back End**
 For the Backend it use .env in order to map the supabase key.<br>
