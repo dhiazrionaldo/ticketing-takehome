@@ -84,14 +84,13 @@ npm run dev:all<br>
 ###  `package.json` (root)
 ```json
 {
-  "name": "ticket-takehome-root",
-  "version": "1.0.0",
-  "private": true,
   "scripts": {
-    "install:all": "npm --prefix backend install && npm --prefix frontend install",
-    "dev": "npm --prefix backend run dev & npm --prefix frontend run dev",
-    "dev:backend": "npm --prefix backend run dev",
-    "dev:frontend": "npm --prefix frontend run dev",
-    "build": "npm --prefix backend run build && npm --prefix frontend run build"
+    "install:all": "npm install --prefix frontend && npm install --prefix backend",
+    "dev:frontend": "npm run dev --prefix frontend",
+    "dev:backend": "npm run dev --prefix backend",
+    "dev:all": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0"
   }
 }
