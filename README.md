@@ -91,7 +91,9 @@ npm run dev:all<br>
 ```json
 {
   "scripts": {
-    "install:all": "npm install --prefix frontend && npm install --prefix backend",
+    "install:all": "npm run install:backend && npm run install:frontend",
+    "install:backend": "cd backend && npm install",
+    "install:frontend": "cd frontend && npm install",    
     "dev:frontend": "npm run dev --prefix frontend",
     "dev:backend": "npm run dev --prefix backend",
     "dev:all": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\""
@@ -100,3 +102,4 @@ npm run dev:all<br>
     "concurrently": "^9.0.0"
   }
 }
+
