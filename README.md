@@ -1,5 +1,13 @@
 <h1>Ticketing Application</h1>
 
+
+## Testing User 
+for testing with admin use this account:<br>
+- Username: **test@admin.com**
+- Password: **Admin@123**<br>
+for user role, you can sign up directly from the applications.
+
+
 This application is created with **NodeJS Version 22.16.0**, before installing **please ensure that you have the same node js version**. <br>
 **Back End**
 For the Backend it use .env in order to map the supabase key.<br>
