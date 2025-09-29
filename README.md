@@ -17,7 +17,7 @@ Also it use express package to host the applications. <br>
 the Default port is set to 3001 for back end, once you clone the project, please go to the path : **your_clone_path**/ticketing-takehome/backend/ run **npm install** in order to install all the packages.<br>
 once the npm install is done, you can run **npm run dev** to start the back end with port 3001 (it's set in the .env file). <br>
 <br>
-**Back End Note**<br>
+<strong>Back End Note</strong><br>
 If the port is already used in you local machine, you can change the port on the **.ENV** file with **PORT** tag.<br>
 if The .env file is not cloned, please let me know. I will be share in private message to to set it up please just copy the **.env** file to the root of the backend project (sample path: **your_clone_path**/ticketing-takehome/backend/)
 
@@ -37,6 +37,8 @@ Clone the repository:<br>
 git clone https://github.com/your-username/ticket-takehome.git<br>
 cd ticket-takehome<br>
 <br>
+<br>
+<strong>Please run npm run install:all first before running the application</strong>
 Dependencies Installation :<br>
 Run this command below :<br>
 npm run install:all<br>
